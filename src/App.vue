@@ -1,4 +1,5 @@
 <template>
+  <!-- <car power="power"/> -->
   <div id="appcontainer">
     <h1>Lista de Tareas</h1>
     <form @submit.prevent="addTodos()">
@@ -19,16 +20,22 @@
         
        </div>  
     </div>
-    <p v-if = "todos.lenght === 0">lista vacía, por favor ingrese alguna tarea</p>
-    <button class="btn waves-effect waves-light red lighten-2" v-if="todos.lenght !== 0" @click="remvoveTodos"> remover todo</button>
+    <p v-if = "todos.length === 0">lista vacía, por favor ingrese alguna tarea</p>
+    <button class="btn waves-effect waves-light red lighten-2" v-if="todos.length !== 0" @click="removeTodos"> remover todo</button>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
+// import { car } from "./props.vue"
+
 export default {
   name: 'App',
+  // components:{
+  //   car,
+  // },
   setup(){
+    // let power = 30;
     const newTodo = ref("");
     const initialLoadData = [
       {
@@ -36,38 +43,39 @@ export default {
         text: "crear funcionalidad de lista de tareas pendientes"
       },
     ];
-    let storedTodos;
+    let stroedTodos;
     localStorage.getItem("todos")
-    ? storedTodos = JSON.parse(localStorage.getItem("todos"))
-    : storedTodos = initialLoadData;
-    const todos = ref(storedTodos);
+    ? stroedTodos = JSON.parse(localStorage.getItem("todos"))
+    : stroedTodos = initialLoadData;
+    const todos = ref(stroedTodos);
     function addTodos() {
       if(newTodo.value !==""){
         todos.value.push({
-          completed: false,
+          complete: false,
           text: newTodo.value,
         });
         newTodo.value = "";
         updatestore();
       }
     }
-    function remvoveTodos(){
-      todos.value.splice(0, todos.value.lenght);
+    function removeTodos(){
+      todos.value.splice(0, todos.value.length);
       updatestore()
     }
     function completedTodo(todo){
-      todo.complete = !todo.complete
+      todo.complete = !todo.complete;
       updatestore()
     }
     function updatestore(){
-      localStorage.setItem("todos",JSON.stringify(todos.value));
+      localStorage.setItem("todos", JSON.stringify(todos.value));
     }
     return{
-      remvoveTodos,
+      removeTodos,
       completedTodo,
       addTodos,
       todos,
       newTodo,
+      // power,
     }
   },
 
