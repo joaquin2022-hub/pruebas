@@ -12,7 +12,13 @@
         <div class="col s12 n6">
           <div class="card teal teal lightean-1">
             <div class="card-content while-text">
-              <span class="card-title">{{todo.text}}</span> 
+              <input v-if="editmode" type="text" class="from-control" v-model="todo.text"/>
+              <span class="card-title" v-else>
+                {{todo.text}}
+              </span> 
+              <button v-if="editmode" class="btn waves-effect waves-light red lighten-2" v-on:click="oneclickupdate">guardar cambios</button>
+              <button v-else class="btn waves-effect waves-light red lighten-2" v-on:click="oneclickedit">Cambios</button>
+              <button class="btn waves-effect waves-light red lighten-2"  @click="removeTodos(index)"> eliminar</button>
             </div>
           </div>
         </div>
@@ -20,8 +26,7 @@
         
        </div>  
     </div>
-    <p v-if = "todos.length === 0">lista vacía, por favor ingrese alguna tarea</p>
-    <button class="btn waves-effect waves-light red lighten-2" v-if="todos.length !== 0" @click="removeTodos"> remover todo</button>
+    <h4 v-if = "todos.length === 0">lista vacía, por favor ingrese alguna tarea</h4>
   </div>
 </template>
 
@@ -58,18 +63,31 @@ export default {
         updatestore();
       }
     }
-    function removeTodos(){
-      todos.value.splice(0, todos.value.length);
-      updatestore()
+    function removeTodos(index){
+      todos.value.splice(index, 1);
+      updatestore();
     }
     function completedTodo(todo){
       todo.complete = !todo.complete;
-      updatestore()
+      updatestore();
     }
     function updatestore(){
       localStorage.setItem("todos", JSON.stringify(todos.value));
     }
+
+    function oneclickedit(){
+      this.editmode = true;
+    }
+
+    function oneclickupdate(index){
+      this.editmode= false,
+      this.$emit("update", todos)
+      todos.value.splice(index, 1);
+    }
     return{
+      oneclickupdate,
+      editmode: false,
+      oneclickedit,
       removeTodos,
       completedTodo,
       addTodos,
